@@ -5,6 +5,7 @@ package lesson2.task1
 import lesson1.task1.discriminant
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
@@ -64,12 +65,13 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    return if (age in 11..19 || age in 111..119) "$age лет"
-    else if (age % 10 in 2..4) "$age года"
-    else if (age % 10 == 1) "$age год"
-    else "$age лет"
+fun ageDescription(age: Int): String = when {
+    age in 11..19 || age in 111..119 -> "$age лет"
+    age % 10 in 2..4 -> "$age года"
+    age % 10 == 1 -> "$age год"
+    else -> "$age лет"
 }
+
 
 /**
  * Простая
@@ -87,9 +89,11 @@ fun timeForHalfWay(
     val s1 = t1 * v1
     val s2 = t2 * v2
     val s3 = t3 * v3
-    return if (s <= s1) t1 * (s / s1)
-    else if (s <= s1 + s2) t1 + t2 * ((s - s1) / s2)
-    else t1 + t2 + t3 * ((s - s1 - s2) / s3)
+    return when {
+        (s <= s1) -> t1 * (s / s1)
+        (s <= s1 + s2) -> t1 + t2 * ((s - s1) / s2)
+        else -> t1 + t2 + t3 * ((s - s1 - s2) / s3)
+    }
 }
 
 /**
@@ -142,13 +146,18 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val sum1 = a + b + c
+    val mx1 = max(a, max(b, c))
+    val sum2 = a * a + b * b + c * c
+    val mx2 = max(a * a, max(b * b, c * c))
     return when {
-        a >= b + c || b >= c + a || c >= b + a -> -1
-        a * a > b * b + c * c || b * b > a * a + c * c || c * c > a * a + b * b -> 2
-        a * a == b * b + c * c || b * b == c * c + a * a || c * c == b * b + a * a -> 1
+        mx1 >= sum1 - mx1 -> -1
+        mx2 == sum2 - mx2 -> 1
+        mx2 >= sum2 - mx2 -> 2
         else -> 0
     }
 }
+
 
 /**
  * Средняя
@@ -159,10 +168,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return if ((c > b && d > b) || (a > d && b > d)) -1
-    else if (a == b || c == d) 0
-    else if (c >= a && d <= b) d - c
-    else if (a >= c && b <= d) b - a
-    else if (a < c) b - c
-    else d - a
+    val mx = max(b, d)
+    val mn = min(a, c)
+    return when {
+        a > d || c > b -> -1
+        (mx == d && mn == c) || (mx == b && mn == a) -> min(b - a, d - c)
+        else -> min(b - c, d - a)
+    }
 }
+

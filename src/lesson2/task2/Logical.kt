@@ -41,14 +41,13 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int):
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int {
-    return when {
-        (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) && month == 2 -> 29
-        month == 2 -> 28
-        month == 4 || month == 6 || month == 9 || month == 11 -> 30
-        else -> 31
-    }
+fun daysInMonth(month: Int, year: Int): Int = when {
+    month == 2 && (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) -> 29
+    month == 2 -> 28
+    month == 4 || month == 6 || month == 9 || month == 11 -> 30
+    else -> 31
 }
+
 
 /**
  * Средняя
@@ -71,6 +70,11 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int):
-        Boolean = min(a, min(c, b)) <= min(r, s) && a + b + c - min(a, min(b, c)) - max(a, max(b, c)) <= max(r, s)
 
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    val mn = min(a, min(c, b))
+    val mx = max(a, max(b, c))
+    val mno = min(r, s)
+    val mxo = max(r, s)
+    return mn <= mno && a + b + c - mn - mx <= mxo
+}

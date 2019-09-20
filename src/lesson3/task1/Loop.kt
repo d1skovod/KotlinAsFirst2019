@@ -71,7 +71,7 @@ fun digitNumber(n: Int): Int {
     if (n == 0) return 1
     var c = 0
     var num = n
-    while (num > 0) {
+    while (num != 0) {
         c++
         num /= 10
     }
@@ -194,7 +194,7 @@ fun sin(x: Double, eps: Double): Double {
     var sign = 0
     var lul = 3
     var num = x
-    if (num > 2 * PI) num -= (num / (2 * PI)) * (2 * PI)
+    if (num > 2 * PI || num < -2 * PI) num -= (num / (2 * PI)) * (2 * PI)
     var delta = num
     while (delta >= eps) {
         if (sign % 2 == 0) num -= x.pow(lul) / factorial(lul)
@@ -220,7 +220,7 @@ fun cos(x: Double, eps: Double): Double {
     var lul = 2
     var num = 1.0
     var x1 = x
-    if (x1 > 2 * PI) x1 -= (x1 / (2 * PI)) * (2 * PI)
+    if (x1 > 2 * PI || x1 < -2 * PI) x1 -= (x1 / (2 * PI)) * (2 * PI)
     var delta = num
     while (delta >= eps) {
         if (sign % 2 == 0) num -= x1.pow(lul) / factorial(lul)
@@ -239,7 +239,7 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int {
+fun revert(n: Long): Long {
     var num = n
     var c = 0
     var res = 0.0
@@ -253,7 +253,7 @@ fun revert(n: Int): Int {
         c--
         num /= 10
     }
-    return res.toInt()
+    return res.toLong()
 }
 
 
@@ -266,8 +266,9 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
+fun isPalindrome(n: Long): Boolean {
     val x = revert(n)
+    println(x)
     return n == x
 }
 

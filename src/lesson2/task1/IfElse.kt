@@ -66,7 +66,7 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String = when {
-    age in 11..19 || age in 111..119 -> "$age лет"
+    age % 100 in 11..19 -> "$age лет"
     age % 10 in 2..4 -> "$age года"
     age % 10 == 1 -> "$age год"
     else -> "$age лет"
@@ -146,14 +146,14 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val sum1 = a + b + c
-    val mx1 = max(a, max(b, c))
-    val sum2 = a * a + b * b + c * c
-    val mx2 = max(a * a, max(b * b, c * c))
+    val sum = a + b + c
+    val mx1 = maxOf(a, b, c)
+    val sqrsum = a * a + b * b + c * c
+    val mx2 = maxOf(a * a, b * b, c * c)
     return when {
-        mx1 >= sum1 - mx1 -> -1
-        mx2 == sum2 - mx2 -> 1
-        mx2 >= sum2 - mx2 -> 2
+        mx1 * 2 >= sum -> -1
+        mx2 == sqrsum - mx2 -> 1
+        mx2 >= sqrsum - mx2 -> 2
         else -> 0
     }
 }
@@ -172,8 +172,7 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     val mn = min(a, c)
     return when {
         a > d || c > b -> -1
-        (mx == d && mn == c) || (mx == b && mn == a) -> min(b - a, d - c)
-        else -> min(b - c, d - a)
+        else -> minOf(min(b - c, d - a), b - a, d - c)
     }
 }
 

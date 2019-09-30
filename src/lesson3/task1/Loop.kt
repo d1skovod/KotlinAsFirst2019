@@ -244,17 +244,17 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Long): Long {
+fun revert(n: Int): Int {
     var num = n
     var c = 0
     var res = 0
-    c = digitNumber(num.toInt())
-    for (i in 1..digitNumber(num.toInt())) {
-        res += (num % 10).toInt() * (10.0.pow(c - 1)).toInt()
+    c = digitNumber(num)
+    for (i in 1..digitNumber(num)) {
+        res += (num % 10) * (10.0.pow(c - 1)).toInt()
         c--
         num /= 10
     }
-    return res.toLong()
+    return res
 }
 
 
@@ -267,7 +267,7 @@ fun revert(n: Long): Long {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Long): Boolean = n == revert(n)
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 
 /**

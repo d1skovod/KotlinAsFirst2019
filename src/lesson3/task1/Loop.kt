@@ -129,8 +129,6 @@ fun minDivisor(n: Int): Int {
     return n
 }
 
-/// !!!
-
 /**
  * Простая
  *
@@ -154,9 +152,11 @@ fun isCoPrime(m: Int, n: Int): Boolean = m * n / lcm(m, n) == 1
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean =
-    sqrt(m.toDouble()).toInt() < sqrt(n.toDouble()).toInt() ||
-            ceil(sqrt(m.toDouble())).toInt() < ceil(sqrt(n.toDouble())).toInt() || m == n
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    val sqm = sqrt(m.toDouble())
+    val sqn = sqrt(n.toDouble())
+    return floor(sqm) < floor(sqn) || ceil(sqm) < ceil(sqn) || m == n
+}
 
 
 /**
@@ -196,17 +196,16 @@ fun collatzSteps(x: Int): Int {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    var sign = 0
-    var lul = 3
-    var num = x
-    if (num > 2 * PI || num < -2 * PI) num -= (num / (2 * PI)) * (2 * PI)
-    var delta = num
-    while (delta >= eps) {
-        if (sign % 2 == 0) num -= x.pow(lul) / factorial(lul)
-        else num += x.pow(lul) / factorial(lul)
-        delta = x.pow(lul) / factorial(lul)
-        lul += 2
-        sign++
+    val angle = (x % (2 * PI))
+    var sign = -1
+    var deg = 3
+    var delta = angle.pow(deg) / factorial(deg)
+    var num = angle - delta
+    while (abs(delta) >= eps) {
+        deg += 2
+        sign *= -1
+        delta *= (angle * angle) / (deg * (deg - 1))
+        num += sign * delta
     }
     return num
 }
@@ -221,20 +220,8 @@ fun sin(x: Double, eps: Double): Double {
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
 fun cos(x: Double, eps: Double): Double {
-    var sign = 0
-    var lul = 2
-    var num = 1.0
-    var x1 = x
-    if (x1 > 2 * PI || x1 < -2 * PI) x1 -= (x1 / (2 * PI)) * (2 * PI)
-    var delta = num
-    while (delta >= eps) {
-        if (sign % 2 == 0) num -= x1.pow(lul) / factorial(lul)
-        else num += x1.pow(lul) / factorial(lul)
-        delta = x1.pow(lul) / factorial(lul)
-        lul += 2
-        sign++
-    }
-    return num
+    val x1 = x + 0.5 * PI
+    return sin(x1, eps)
 }
 
 /**
@@ -280,7 +267,7 @@ fun isPalindrome(n: Int): Boolean = n == revert(n)
  */
 fun hasDifferentDigits(n: Int): Boolean {
     var d = n
-    while (d > 9) {
+    while (d >= 10) {
         if (d % 10 != (d % 100) / 10) return true
         d /= 10
     }
@@ -297,20 +284,21 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var num = 1
+    var sqnum = 1
     var count = 0
-    var sq = 1
+    var num = 1
     var deg = 1.0
     while (count < n) {
-        num = sqr(sq)
-        if (num / (10.0.pow(deg)).toInt() == 0) count += deg.toInt()
-        else {
+        sqnum = sqr(num)
+        if (sqnum / (10.0.pow(deg)).toInt() == 0) {
+            count += deg.toInt()
+        } else {
             deg += 1
             count += deg.toInt()
         }
-        sq++
+        num++
     }
-    return (num / 10.0.pow(count - n).toInt()) % 10
+    return (sqnum / 10.0.pow(count - n).toInt()) % 10
 }
 
 /**

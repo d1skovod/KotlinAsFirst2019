@@ -145,7 +145,13 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): MutableMa
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
+    val answ = mutableListOf<String>()
+    for (element in a) {
+        if (b.indexOf(element) != -1 && answ.indexOf(element) == -1) answ.add(element)
+    }
+    return answ
+}
 
 /**
  * Средняя
@@ -164,7 +170,15 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+    val mp = mutableMapOf<String, String>()
+    for ((key, item) in mapA) mp[key] = item
+    for ((key, item) in mapB) {
+        if (!mp.contains(key)) mp[key] = item
+        else if (item != mapA[key]) mp[key] += ", $item"
+    }
+    return mp
+}
 
 /**
  * Средняя
@@ -297,4 +311,48 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val mpList = mutableMapOf<String, String>()
+    val mpVal = mutableMapOf<String, Pair<Int, Int>>()
+    var max = ""
+    for ((key, item) in treasures) {
+        if (mpList.isEmpty()) {
+            if (item.first <= capacity) {
+                mpList[key] = key
+                mpVal[key] = item
+                max = key
+            }
+        } else if (item.first + (mpVal[max]?.first ?: 0) <= capacity) {
+            mpList[key] = max
+            mpVal[key] = Pair((mpVal[max]?.first ?: 0) + item.first, (mpVal[max]?.second ?: 0) + item.second)
+            max = key
+        } else {
+            var lmax = ""
+            for ((key1, item1) in mpVal) {
+                if (lmax == "") lmax = key1
+                if (item.first + (mpVal[key1]?.first ?: 0) <= capacity && mpVal[key1]?.second ?: 0 > mpVal[lmax]?.second ?: 0)
+                    lmax = key1
+            }
+            if (item.first + (mpVal[lmax]?.first ?: 0) > capacity) lmax = ""
+            else {
+                mpList[key] = lmax
+                mpVal[key] = Pair((mpVal[lmax]?.first ?: 0) + item.first, (mpVal[lmax]?.second ?: 0) + item.second)
+                lmax = key
+                if (mpVal[lmax]?.second ?: 0 > mpVal[max]?.second ?: 0) max = lmax
+            }
+        }
+    }
+    val answ = mutableSetOf<String>()
+    if (mpList[max] == null) return answ
+    var a = max
+    var b = mpList[max]
+    answ.add(a)
+    while (a != b) {
+        answ.add(a)
+        if (b != null) {
+            a = b
+        }
+        b = mpList[a]
+    }
+    return answ.toSet()
+}

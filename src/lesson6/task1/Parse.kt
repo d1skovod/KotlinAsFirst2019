@@ -69,7 +69,33 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val parts = str.split(" ").toMutableList()
+    try {
+        if (Regex("""(\d{2}|\d)""").find(parts[0]) == null) return ""
+        if (Regex("""([а-я])""").find(parts[1]) == null) return ""
+        if (Regex("""(\d{4})""").find(parts[2]) == null) return ""
+    } catch (e: IndexOutOfBoundsException) {
+        return ""
+    }
+    var day = parts[0].toInt()
+    var mounth = parts[1]
+    if (parts[1] == "января" && day <= 31) parts[1] = "01"
+    if (parts[1] == "февраля" && day <= 28) parts[1] = "02"
+    if (parts[1] == "марта" && day <= 31) parts[1] = "03"
+    if (parts[1] == "апреля" && day <= 30) parts[1] = "04"
+    if (parts[1] == "мая" && day <= 31) parts[1] = "05"
+    if (parts[1] == "июня" && day <= 30) parts[1] = "06"
+    if (parts[1] == "июля" && day <= 31) parts[1] = "07"
+    if (parts[1] == "августа" && day <= 31) parts[1] = "08"
+    if (parts[1] == "сентября" && day <= 30) parts[1] = "09"
+    if (parts[1] == "октября" && day <= 31) parts[1] = "10"
+    if (parts[1] == "ноября" && day <= 30) parts[1] = "11"
+    if (parts[1] == "декабря" && day <= 31) parts[1] = "12"
+    if (mounth == parts[1]) return ""
+    if (parts[0].length < 2) parts[0] = "0" + parts[0]
+    return String.format("%s.%s.%s", parts[0], parts[1], parts[2])
+}
 
 /**
  * Средняя

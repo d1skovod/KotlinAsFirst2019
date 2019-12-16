@@ -148,7 +148,7 @@ fun mean(list: List<Double>): Double {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     if (list.isEmpty()) return list
-    var avg = mean(list)
+    val avg = mean(list)
     for (i in 0 until list.size) {
         list[i] -= avg
     }
@@ -199,9 +199,8 @@ fun polynom(p: List<Int>, x: Int): Int {
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     var sum = 0
     for (i in list.indices) {
-        val elm = list[i]
-        list[i] += sum
-        sum += elm
+        sum += list[i]
+        list[i] = sum
     }
     return list
 }
@@ -237,10 +236,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String {
-    val v = factorize(n)
-    return v.joinToString("*")
-}
+fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
 
 /**
  * Средняя
@@ -274,8 +270,8 @@ fun convertToString(n: Int, base: Int): String {
     val v = convert(n, base).toMutableList()
     var str = ""
     for (i in v.indices) {
-        if (v[i] > 9) v[i] += 87
-        v[i] += 48
+        if (v[i] > 9) v[i] += 'a'.toInt() - 10
+        v[i] += '0'.toInt()
         str += v[i].toChar()
     }
     return str

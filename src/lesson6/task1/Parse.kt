@@ -69,19 +69,28 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+
+fun daysInMonth(month: Int, year: Int): Int = when {
+    month == 2 && (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) -> 29
+    month == 2 -> 28
+    month == 4 || month == 6 || month == 9 || month == 11 -> 30
+    else -> 31
+}
+
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ").toMutableList()
+    if (parts.size > 3) return ""
     try {
         if (Regex("""(\d{2}|\d)""").find(parts[0]) == null) return ""
         if (Regex("""([а-я])""").find(parts[1]) == null) return ""
-        if (Regex("""(\d)""").find(parts[2]) == null) return ""
+        if (Regex("""(^0123456789)""").find(parts[2]) != null) return ""
     } catch (e: IndexOutOfBoundsException) {
         return ""
     }
     val day = parts[0].toInt()
     val mounth = parts[1]
     if (parts[1] == "января" && day <= 31) parts[1] = "01"
-    if (parts[1] == "февраля" && day <= 28) parts[1] = "02"
+    if (parts[1] == "февраля" && day <= daysInMonth(2, parts[2].toInt())) parts[1] = "02"
     if (parts[1] == "марта" && day <= 31) parts[1] = "03"
     if (parts[1] == "апреля" && day <= 30) parts[1] = "04"
     if (parts[1] == "мая" && day <= 31) parts[1] = "05"
@@ -109,14 +118,15 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".").toMutableList()
+    if (parts.size > 3) return ""
     if (Regex("""(\d{2})""").find(parts[0]) == null) return ""
     if (Regex("""(\d{2})""").find(parts[1]) == null) return ""
-    if (Regex("""(\d{4})""").find(parts[2]) == null) return ""
+    if (Regex("""([^0123456789])""").find(parts[2]) != null) return ""
     if (parts[0].first() == '0') parts[0] = parts[0].substring(1)
     val day = parts[0].toInt()
     val mounth = parts[1]
     if (mounth == "01" && day <= 31) parts[1] = "января"
-    if (mounth == "02" && day <= 28) parts[1] = "февраля"
+    if (mounth == "02" && day <= daysInMonth(2, parts[2].toInt())) parts[1] = "февраля"
     if (mounth == "03" && day <= 31) parts[1] = "марта"
     if (mounth == "04" && day <= 30) parts[1] = "апреля"
     if (mounth == "05" && day <= 31) parts[1] = "мая"
@@ -203,7 +213,36 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val parts = expression.split(" ").toList()
+    var res = 0
+    var f = false
+    for (i in parts.indices) {
+        if (Regex("""([-])""").find(parts[i]) != null
+            && Regex("""([^-])""").find(parts[i]) != null) throw IllegalArgumentException()
+        if (Regex("""([+])""").find(parts[i]) != null
+            && Regex("""([^+])""").find(parts[i]) != null) throw IllegalArgumentException()
+        if (Regex("""([0123456789])""").find(parts[i]) != null
+            && Regex("""([^0123456789])""").find(parts[i]) != null) throw IllegalArgumentException()
+        if (i == 0) {
+            res += parts[i].toInt()
+            f = true
+            continue
+        }
+        if (parts[i] == "+" || parts[i] == "-") {
+            if (!f) throw IllegalArgumentException()
+            else f = false
+        } else {
+            if (f) throw IllegalArgumentException()
+            else {
+                if (parts[i - 1] == "-") res -= parts[i].toInt()
+                if (parts[i - 1] == "+") res += parts[i].toInt()
+                f = true
+            }
+        }
+    }
+    return res
+}
 
 /**
  * Сложная

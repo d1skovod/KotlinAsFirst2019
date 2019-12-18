@@ -79,7 +79,7 @@ fun daysInMonth(month: Int, year: Int): Int = when {
 
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ").toMutableList()
-    if (parts.size > 3) return ""
+    if (parts.size != 3) return ""
     try {
         if (Regex("""(\d{2}|\d)""").find(parts[0]) == null) return ""
         if (Regex("""([а-я])""").find(parts[1]) == null) return ""
@@ -118,7 +118,7 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".").toMutableList()
-    if (parts.size > 3) return ""
+    if (parts.size != 3) return ""
     if (Regex("""(\d{2})""").find(parts[0]) == null) return ""
     if (Regex("""(\d{2})""").find(parts[1]) == null) return ""
     if (Regex("""([^0123456789])""").find(parts[2]) != null) return ""
@@ -158,6 +158,7 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
     if (Regex("""([^0123456789\- +()])""").find(phone) != null) return ""
     if (Regex("""(\(\))""").find(phone) != null) return ""
+    if (Regex("""[0-9]""").find(phone) == null) return ""
     var answ = ""
     for (i in phone.indices) {
         if (phone[i] == '+' && answ.isEmpty()) answ += "+"
@@ -215,6 +216,7 @@ fun bestHighJump(jumps: String): Int = TODO()
  */
 fun plusMinus(expression: String): Int {
     val parts = expression.split(" ").toList()
+    if (parts.isEmpty()) throw IllegalArgumentException()
     var res = 0
     var f = false
     for (i in parts.indices) {

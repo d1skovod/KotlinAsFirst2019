@@ -190,7 +190,24 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val mpVal = mutableMapOf<String, Double>()
+    val mpCount = mutableMapOf<String, Int>()
+    for ((name, value) in stockPrices) {
+        if (!mpVal.contains(name)) {
+            mpVal[name] = value
+            mpCount[name] = 1
+        } else {
+            mpVal[name] = mpVal[name]!! + value
+            mpCount[name] = mpCount[name]!! + 1
+        }
+    }
+    for ((name, value) in mpVal) {
+        mpVal[name] = mpVal[name]!! / mpCount[name]!!
+    }
+    return mpVal
+}
+
 
 /**
  * Средняя
@@ -330,7 +347,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             var lmax = ""
             for ((key1, item1) in mpVal) {
                 if (lmax == "") lmax = key1
-                if (item.first + (mpVal[key1]?.first ?: 0) <= capacity && mpVal[key1]?.second ?: 0 > mpVal[lmax]?.second ?: 0)
+                if (item.first + (mpVal[key1]?.first
+                        ?: 0) <= capacity && mpVal[key1]?.second ?: 0 > mpVal[lmax]?.second ?: 0
+                )
                     lmax = key1
             }
             if (item.first + (mpVal[lmax]?.first ?: 0) > capacity) lmax = ""
@@ -348,11 +367,12 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     var b = mpList[max]
     answ.add(a)
     while (a != b) {
+        b = mpList[a]
         answ.add(a)
         if (b != null) {
             a = b
         }
-        b = mpList[a]
+
     }
     return answ.toSet()
 }

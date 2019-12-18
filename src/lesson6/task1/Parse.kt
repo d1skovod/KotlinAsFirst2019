@@ -74,7 +74,7 @@ fun dateStrToDigit(str: String): String {
     try {
         if (Regex("""(\d{2}|\d)""").find(parts[0]) == null) return ""
         if (Regex("""([а-я])""").find(parts[1]) == null) return ""
-        if (Regex("""(\d{4})""").find(parts[2]) == null) return ""
+        if (Regex("""(\d)""").find(parts[2]) == null) return ""
     } catch (e: IndexOutOfBoundsException) {
         return ""
     }
@@ -107,7 +107,29 @@ fun dateStrToDigit(str: String): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val parts = digital.split(".").toMutableList()
+    if (Regex("""(\d{2})""").find(parts[0]) == null) return ""
+    if (Regex("""(\d{2})""").find(parts[1]) == null) return ""
+    if (Regex("""(\d{4})""").find(parts[2]) == null) return ""
+    if (parts[0].first() == '0') parts[0] = parts[0].substring(1)
+    val day = parts[0].toInt()
+    val mounth = parts[1]
+    if (mounth == "01" && day <= 31) parts[1] = "января"
+    if (mounth == "02" && day <= 28) parts[1] = "февраля"
+    if (mounth == "03" && day <= 31) parts[1] = "марта"
+    if (mounth == "04" && day <= 30) parts[1] = "апреля"
+    if (mounth == "05" && day <= 31) parts[1] = "мая"
+    if (mounth == "06" && day <= 30) parts[1] = "июня"
+    if (mounth == "07" && day <= 31) parts[1] = "июля"
+    if (mounth == "08" && day <= 31) parts[1] = "августа"
+    if (mounth == "09" && day <= 30) parts[1] = "сентября"
+    if (mounth == "10" && day <= 31) parts[1] = "октября"
+    if (mounth == "11" && day <= 30) parts[1] = "ноября"
+    if (mounth == "12" && day <= 31) parts[1] = "декабря"
+    if (mounth == parts[1]) return ""
+    return String.format("%s %s %s", parts[0], parts[1], parts[2])
+}
 
 /**
  * Средняя
@@ -123,7 +145,16 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    if (Regex("""([^0123456789\- \+\(\)])""").find(phone) != null) return ""
+    if (Regex("""(\(\))""").find(phone) != null) return ""
+    var answ = ""
+    for (i in phone.indices) {
+        if (phone[i] == '+' && answ.isEmpty()) answ += "+"
+        if (Regex("""([0-9])""").find(phone[i].toString()) != null) answ += phone[i]
+    }
+    return answ
+}
 
 /**
  * Средняя
@@ -135,7 +166,20 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val parts = jumps.split(" ").toList()
+    var max = -1
+    for (i in parts.indices) {
+        var num = -1
+        try {
+            num = parts[i].toInt()
+        } catch (e: NumberFormatException) {
+            if (Regex("""(\%|\-)""").find(parts[i]) == null) return -1
+        }
+        if (num > max) max = num
+    }
+    return max
+}
 
 /**
  * Сложная

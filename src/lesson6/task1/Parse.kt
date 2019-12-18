@@ -216,7 +216,7 @@ fun bestHighJump(jumps: String): Int = TODO()
  */
 fun plusMinus(expression: String): Int {
     val parts = expression.split(" ").toList()
-    if (parts.isEmpty()) throw IllegalArgumentException()
+    if (expression.isEmpty()) throw IllegalArgumentException()
     var res = 0
     var f = false
     for (i in parts.indices) {

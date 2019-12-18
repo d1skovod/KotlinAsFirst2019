@@ -174,7 +174,9 @@ fun top20Words(inputName: String): Map<String, Int> {
         "]",
         "\n",
         "\t",
-        "\r"
+        "\r",
+        "/",
+        "|"
     )
     for (i in words.indices) {
         val w = words[i].toLowerCase()

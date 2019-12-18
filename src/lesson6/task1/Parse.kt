@@ -78,8 +78,8 @@ fun dateStrToDigit(str: String): String {
     } catch (e: IndexOutOfBoundsException) {
         return ""
     }
-    var day = parts[0].toInt()
-    var mounth = parts[1]
+    val day = parts[0].toInt()
+    val mounth = parts[1]
     if (parts[1] == "января" && day <= 31) parts[1] = "01"
     if (parts[1] == "февраля" && day <= 28) parts[1] = "02"
     if (parts[1] == "марта" && day <= 31) parts[1] = "03"
@@ -146,7 +146,7 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    if (Regex("""([^0123456789\- \+\(\)])""").find(phone) != null) return ""
+    if (Regex("""([^0123456789\- +()])""").find(phone) != null) return ""
     if (Regex("""(\(\))""").find(phone) != null) return ""
     var answ = ""
     for (i in phone.indices) {
@@ -174,7 +174,7 @@ fun bestLongJump(jumps: String): Int {
         try {
             num = parts[i].toInt()
         } catch (e: NumberFormatException) {
-            if (Regex("""(\%|\-)""").find(parts[i]) == null) return -1
+            if (Regex("""([%\-])""").find(parts[i]) == null) return -1
         }
         if (num > max) max = num
     }

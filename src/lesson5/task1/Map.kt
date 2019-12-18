@@ -202,7 +202,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
             mpCount[name] = mpCount[name]!! + 1
         }
     }
-    for ((name, value) in mpVal) {
+    for ((name) in mpVal) {
         mpVal[name] = mpVal[name]!! / mpCount[name]!!
     }
     return mpVal

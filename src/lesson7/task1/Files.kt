@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.File
 import java.io.InputStream
+import java.lang.StringBuilder
 
 /**
  * Пример
@@ -55,7 +56,19 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    TODO()
+    val mp = mutableMapOf<String, Int>()
+    val text = File(inputName).readText().toLowerCase()
+    for (strng in substrings) {
+        val str = strng.toLowerCase()
+        for (i in 0..text.length - str.length) {
+            if (str[0] == text[i]) {
+                val part = text.substring(i, i + str.length)
+                if (str == part) mp[strng] = mp.getOrDefault(strng, 0) + 1
+            }
+        }
+        if (!mp.containsKey(strng)) mp[strng] = 0
+    }
+    return mp
 }
 
 
@@ -95,7 +108,33 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val fixed = mutableListOf<String>()
+    val lines = File(inputName).readLines()
+    var max = 0
+    for (bigline in lines) {
+        var first = -1
+        var last = -1
+        for (i in 0..bigline.length - 1) {
+            if (bigline[i] != ' ') {
+                last = i
+                if (first == -1) first = i
+            }
+        }
+        val line = if (bigline == "") bigline
+        else bigline.substring(first, last + 1)
+        fixed.add(line)
+        if (line.length > max) max = line.length
+    }
+    for (line in fixed) {
+        val space = (max - line.length) / 2
+        val str = StringBuilder()
+        for (i in 1..space) str.append(" ")
+        str.append(line)
+        outputStream.write(str.toString())
+        outputStream.newLine()
+    }
+    outputStream.close()
 }
 
 /**
@@ -148,57 +187,16 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  *
  */
 fun top20Words(inputName: String): Map<String, Int> {
-    val str = File(inputName).readLines().toString()
     val mp = mutableMapOf<String, Int>()
-    val words = str.split(
-        " ",
-        ",",
-        "!",
-        "?",
-        ".",
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "-",
-        ":",
-        ";",
-        "[",
-        "]",
-        "\n",
-        "\t",
-        "\r",
-        "/",
-        "|"
-    )
-    for (i in words.indices) {
-        val w = words[i].toLowerCase()
-        if (!mp.containsKey(w)) mp[w] = 1
-        else mp[w] = mp[w]!! + 1
+    val text = File(inputName).readText()
+    val words = text.split(Regex("""[^A-zА-яЁё]""")).map { it.toLowerCase() }
+    for (wrd in words) {
+        if (wrd == "") continue
+        mp[wrd] = mp.getOrDefault(wrd, 0) + 1
     }
-
-    if (mp.containsKey("")) mp.remove("")
-    var top = mutableListOf<Int>()
-    for ((key, item) in mp) {
-        top.add(item)
-    }
-    top.toIntArray()
-    top.sort()
-
-    var edge = 0
-    if (top.size > 20) edge = top[top.size - 20]
-    for ((key, item) in mp) {
-        if (item < edge) mp.remove(key)
-    }
-    return mp
+    return mp.toList().sortedByDescending { it.second }.take(20).toMap()
 }
+
 
 /**
  * Средняя

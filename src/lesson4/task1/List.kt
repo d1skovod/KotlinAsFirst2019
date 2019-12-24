@@ -179,11 +179,11 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
-    var res = 0.0
+    var res = 0
     for (i in p.indices) {
-        res += p[i] * x.toDouble().pow(i.toDouble())
+        res += p[i] * (x.toDouble().pow(i)).toInt()
     }
-    return res.toInt()
+    return res
 }
 
 /**
@@ -197,10 +197,8 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    var sum = 0
     for (i in list.indices) {
-        sum += list[i]
-        list[i] = sum
+        if (i != 0) list[i] += list[i - 1]
     }
     return list
 }
@@ -248,8 +246,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
 fun convert(n: Int, base: Int): List<Int> {
     val v = mutableListOf<Int>()
     if (n == 0) {
-        v.add(0)
-        return v
+        return listOf(0)
     }
     var num = n
     while (num > 0) {
@@ -272,13 +269,12 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val v = convert(n, base).toMutableList()
-    var str = ""
-    val alph = "abcdefghijklmnopqrstuvwxyz"
+    val str = StringBuilder()
     for (i in v.indices) {
-        if (v[i] > 9) str += alph[v[i] - 10]
-        else str += v[i].toString()
+        if (v[i] > 9) str.append('a' + v[i] - 10)
+        else str.append(v[i].toString())
     }
-    return str
+    return str.toString()
 }
 
 /**
